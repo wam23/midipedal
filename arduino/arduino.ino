@@ -5,24 +5,30 @@ Libraries: MIDIUSB, ezButton, MagicPot
 */
 
 #include <ezButton.h>
+#include <MagicPot.h>
 
 #define CHANNEL = 1
 
 int waitTime = 100;
 ezButton btn1(7);
+MagicPot potentiometer(A0);
 
 void setup()
 {
-  Serial.begin(9600);
+  Serial.begin(115200);
 
   pinMode(LED_BUILTIN, OUTPUT);
 
   btn1.setDebounceTime(50);
+  potentiometer.begin();
+  potentiometer.onChange(onPotentiometerChange);
 }
 
 void loop()
 {
   btn1.loop();
+  potentiometer.read(2);
+
   if (btn1.isPressed())
   {
     digitalWrite(LED_BUILTIN, HIGH);
@@ -33,6 +39,10 @@ void loop()
 
   // x = map(x, 0, 1024, 0, 127);
   // x = constrain(x, 0, 127)
+}
+
+void onPotentiometerChange() {
+  Serial.println(potentiometer.getValue());
 }
 
 void controlChange(byte control, byte value)
