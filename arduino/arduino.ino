@@ -1,24 +1,35 @@
 /*
-Board: todo
+Board: Arduino Uno
 Hardware: todo
 Libraries: MIDIUSB, ezButton, MagicPot
 */
 
+#include <ezButton.h>
+
 #define CHANNEL = 1
+
+int waitTime = 100;
+ezButton btn1(7);
 
 void setup()
 {
   Serial.begin(9600);
 
   pinMode(LED_BUILTIN, OUTPUT);
+
+  btn1.setDebounceTime(50);
 }
 
 void loop()
 {
-  digitalWrite(LED_BUILTIN, HIGH);
-  delay(1000);
-  digitalWrite(LED_BUILTIN, LOW);
-  delay(1000);
+  btn1.loop();
+  if (btn1.isPressed())
+  {
+    digitalWrite(LED_BUILTIN, HIGH);
+    delay(waitTime);
+    digitalWrite(LED_BUILTIN, LOW);
+    delay(waitTime);
+  }
 
   // x = map(x, 0, 1024, 0, 127);
   // x = constrain(x, 0, 127)
