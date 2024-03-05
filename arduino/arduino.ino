@@ -8,21 +8,36 @@ Libraries: MIDIUSB, OneButton
 
 #define CHANNEL = 1
 
-OneButton btn1 = OneButton(7, true, true);
+OneButton btn1 = OneButton(7);
+OneButton btn2 = OneButton(8);
+OneButton btn3 = OneButton(9);
 int pot1 = 0;
+int pot2 = 0;
 
 void setup()
 {
   Serial.begin(115200);
+
   btn1.attachClick(handleClick, &btn1);
   btn1.attachDoubleClick(handleDoubleClick, &btn1);
   btn1.attachLongPressStart(handleLongPress, &btn1);
+
+  btn2.attachClick(handleClick, &btn2);
+  btn2.attachDoubleClick(handleDoubleClick, &btn2);
+  btn2.attachLongPressStart(handleLongPress, &btn2);
+
+  btn3.attachClick(handleClick, &btn3);
+  btn3.attachDoubleClick(handleDoubleClick, &btn3);
+  btn3.attachLongPressStart(handleLongPress, &btn3);
 }
 
 void loop()
 {
   btn1.tick();
+  btn2.tick();
+  btn3.tick();
   pot1 = readPotentiometer(A0, pot1);
+  pot2 = readPotentiometer(A1, pot2);
 }
 
 void handleClick(OneButton *oneButton)
