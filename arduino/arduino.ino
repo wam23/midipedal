@@ -1,32 +1,43 @@
 /*
 Board: Arduino Uno
 Hardware: todo
-Libraries: MIDIUSB, ezButton
+Libraries: MIDIUSB, OneButton
 */
 
-#include <ezButton.h>
+#include <OneButton.h>
 
 #define CHANNEL = 1
 
-ezButton btn1(7);
+OneButton btn1 = OneButton(7, true, true);
 int pot1 = 0;
 
 void setup()
 {
   Serial.begin(115200);
-
-  btn1.setDebounceTime(50);
+  btn1.attachClick(handleClick, &btn1);
+  btn1.attachDoubleClick(handleDoubleClick, &btn1);
+  btn1.attachLongPressStart(handleLongPress, &btn1);
 }
 
 void loop()
 {
-  btn1.loop();
+  btn1.tick();
   pot1 = readPotentiometer(A0, pot1);
+}
 
-  if (btn1.isPressed())
-  {
-    controlChange(1, 1);
-  }
+void handleClick(OneButton *oneButton)
+{
+  controlChange(oneButton->pin(), 1);
+}
+
+void handleDoubleClick(OneButton *oneButton)
+{
+  controlChange(oneButton->pin(), 2);
+}
+
+void handleLongPress(OneButton *oneButton)
+{
+  controlChange(oneButton->pin(), 3);
 }
 
 int readPotentiometer(uint8_t pin, int oldValue)
