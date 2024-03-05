@@ -1,41 +1,48 @@
 /*
 Board: Arduino Uno
 Hardware: todo
-Libraries: MIDIUSB, ezButton, MagicPot
+Libraries: MIDIUSB, ezButton
 */
 
 #include <ezButton.h>
-#include <MagicPot.h>
 
 #define CHANNEL = 1
 
 ezButton btn1(7);
-MagicPot potentiometer(A0, 0, 127);
+int pot1 = 0;
 
 void setup()
 {
   Serial.begin(115200);
 
   btn1.setDebounceTime(50);
-  potentiometer.begin();
-  potentiometer.onChange(onPotentiometerChange);
 }
 
 void loop()
 {
   btn1.loop();
-  potentiometer.read(2);
+  pot1 = readPotentiometer(A0, pot1);
 
   if (btn1.isPressed())
   {
-    controlChange(10, 1);
+    controlChange(1, 1);
   }
 }
 
-void onPotentiometerChange()
+int readPotentiometer(uint8_t pin, int oldValue)
 {
-  int val = potentiometer.getValue();
-  controlChange(20, val);
+  int rawValue = analogRead(pin);
+
+  if (abs(oldValue - rawValue) > 5)
+  {
+    int value = map(rawValue, 0, 1024, 0, 127);
+    controlChange(pin, value);
+    return rawValue;
+  }
+  else
+  {
+    return oldValue;
+  }
 }
 
 void controlChange(byte control, byte value)
