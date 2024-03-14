@@ -41,17 +41,17 @@ void loop()
 
 void handleClick(OneButton *oneButton)
 {
-  controlChange(oneButton->pin(), 16, 127);
+  patchChange(oneButton->pin(), 0);
 }
 
 void handleDoubleClick(OneButton *oneButton)
 {
-  controlChange(oneButton->pin(), 17, 127);
+  patchChange(oneButton->pin(), 1);
 }
 
 void handleLongPress(OneButton *oneButton)
 {
-  controlChange(oneButton->pin(), 18, 127);
+  patchChange(oneButton->pin(), 2);
 }
 
 int readPotentiometer(uint8_t pin, int oldValue)
@@ -72,7 +72,7 @@ int readPotentiometer(uint8_t pin, int oldValue)
 
 void controlChange(byte channel, byte control, byte value)
 {
-  Serial.print("send MIDI CC control ");
+  Serial.print("send MIDI control ");
   Serial.print(control);
   Serial.print(" = ");
   Serial.println(value);
@@ -86,24 +86,15 @@ void controlChange(byte channel, byte control, byte value)
   // Fourth parameter is the control value (0-127).
   midiEventPacket_t event = {0x0B, 0xB0 | channel, control, value};
   MidiUSB.sendMIDI(event);
+  MidiUSB.flush();
 }
 
-void noteOn(byte channel, byte pitch, byte velocity) {
-  Serial.print("noteOn ");
-  Serial.print(pitch);
-  Serial.print(" = ");
-  Serial.println(velocity);
+void patchChange(byte channel, byte patch)
+{
+  Serial.print("send MIDI patch ");
+  Serial.println(patch);
 
-  midiEventPacket_t noteOn = {0x09, 0x90 | channel, pitch, velocity};
-  MidiUSB.sendMIDI(noteOn);
-}
-
-void noteOff(byte channel, byte pitch, byte velocity) {
-  Serial.print("noteOff ");
-  Serial.print(pitch);
-  Serial.print(" = ");
-  Serial.println(velocity);
-
-  midiEventPacket_t noteOff = {0x08, 0x80 | channel, pitch, velocity};
-  MidiUSB.sendMIDI(noteOff);
+  midiEventPacket_t event = {0x0C, 0xC0 | channel, patch, patch};
+  MidiUSB.sendMIDI(event);
+  MidiUSB.flush();
 }
