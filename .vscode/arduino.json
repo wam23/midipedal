@@ -1,5 +1,6 @@
 {
     "sketch": "arduino/arduino.ino",
-    "board": "arduino:avr:uno",
-    "port": "/dev/tty.usbmodem23101"
+    "board": "SparkFun:avr:promicro",
+    "port": "/dev/tty.usbmodemMIDI1",
+    "configuration": "cpu=16MHzatmega32U4"
 }
