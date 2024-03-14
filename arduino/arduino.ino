@@ -1,6 +1,5 @@
 /*
-Board: Arduino Uno
-Hardware: todo
+Board: SparkFun Pro Micro (atmega32U4)
 Libraries: MIDIUSB, OneButton
 */
 
@@ -89,12 +88,12 @@ void controlChange(byte channel, byte control, byte value)
   MidiUSB.flush();
 }
 
-void patchChange(byte channel, byte patch)
+void patchChange(byte channel, byte value)
 {
   Serial.print("send MIDI patch ");
-  Serial.println(patch);
+  Serial.println(value);
 
-  midiEventPacket_t event = {0x0C, 0xC0 | channel, patch, patch};
+  midiEventPacket_t event = {0x0C, 0xC0 | channel, value};
   MidiUSB.sendMIDI(event);
   MidiUSB.flush();
 }
